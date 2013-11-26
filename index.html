@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map-canvas { height: 100% }
+    </style>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyCW4Xklzsz81joDEoqEPlSt2fhaxArZlAE&sensor=true&language=ru">
+    </script>
+    
+    <script type="text/javascript">
+
+      // simply new look
+      google.maps.visualRefresh = true;
+      
+      function initialize() {
+        var mapOptions = {
+          center: new google.maps.LatLng(55.80, 49.10),
+          zoom: 12
+        };
+        
+
+        geocoder = new google.maps.Geocoder();
+
+        var map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+
+      google.maps.event.addListener(map, 'dblclick', function(event) {
+        placeMarker(event.latLng);
+      });
+
+      
+
+      var marker;
+      function placeMarker(location) {
+        if (marker) {
+          marker.setPosition(location);
+          
+        } else {
+          marker = new google.maps.Marker({
+            draggable:true,
+            position: location,
+            map: map,
+            animation: google.maps.Animation.DROP
+          });
+          google.maps.event.addListener(marker, 'dragend', function(event) {
+          var point = marker.getPosition();
+          getAddress(point);
+        });
+        }
+        getAddress(location);
+
+      }
+
+      function getAddress(latLng) {
+        geocoder.geocode({
+          'latLng': latLng
+        },
+        function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            if (results[0]) {
+              document.getElementById('address').value = results[0].formatted_address;
+            } else {
+              document.getElementById('address').value = "No results";
+            }
+          } else {
+            document.getElementById('address').value = status;
+          }
+
+        });
+      }
+
+    }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body>
+  <div id="header">Размещение данных на карте города</div>
+  <input type="text" id="address" size="200"/>
+    <div id="map-canvas"/>
+    <script src="js/functions.js"></script>
+  </body>
+</html>
