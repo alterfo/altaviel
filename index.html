@@ -14,10 +14,16 @@
 </head>
 
 <body>
-    <input id="address" name="address" value="" type="text" placeholder="Address" data-clear-btn="true" />
-    <input type="button" onclick="codeAddress()" value="Найти по адресу" />
+    <div data-role="page">
+        <div data-role="header"></div>
+        <div data-role="content">
+            <input id="address" name="address" value="" type="text" placeholder="Address" data-clear-btn="true" />
+            <input type="button" onclick="codeAddress()" value="Найти по адресу" />
 
-    <div id="map-canvas" />
+            <div id="map-canvas" />
+        </div>
+        <div data-role="footer"></div>
+    </div>
 
 
 
