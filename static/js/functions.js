@@ -2,20 +2,46 @@ var map;
 var marker;
 // simply new look
 google.maps.visualRefresh = true;
-google.maps.event.addDomListener(window, 'load', initialize);
 
-function initialize() {
+$(function() {
+    $('#map_page').on('pageshow', function(e) {
+        $('#form_page_href').hide();
+        navigator.geolocation.getCurrentPosition(function(loc) {
+            if (loc) {
+                var myPosition = new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude);
+                showMap(myPosition);
+                placeMarker(myPosition);
+                $('#form_page_href').show();
+            } else {
+
+                showMap();
+                $('#message').append('Укажите ваше местоположение вручную');
+                $('#form_page_href').hide();
+                $('#find_by_addr').closest('.ui-btn').show();
+            }
+        });
+    });
+});
+
+
+
+function showMap(center) {
     var mapOptions = {
-        center: new google.maps.LatLng(55.80, 49.10),
-        zoom: 12,
-        disableDoubleClickZoom: true // убивает зум по двойному клику
+        center: center || new google.maps.LatLng(55.80, 49.10),
+        zoom: 16,
+        disableDoubleClickZoom: true, // убивает зум по двойному клику
+        mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
-    map = new google.maps.Map(document.getElementById("map-canvas"),
-        mapOptions);
+    map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
     google.maps.event.addListener(map, 'dblclick', function(event) {
         placeMarker(event.latLng);
+    });
+    google.maps.event.addDomListener(window, "resize", function() {
+        var center = map.getCenter();
+        google.maps.event.trigger(map, "resize");
+        map.setCenter(center);
     });
 }
 
@@ -25,10 +51,10 @@ function initialize() {
  * Сразу же на него вешается событие по обработке драгэндропа.
  * Координаты передаются функции getAddress для вывода адреса.
  */
+
 function placeMarker(location) {
     if (marker) {
         marker.setPosition(location);
-
     } else {
         marker = new google.maps.Marker({
             draggable: true,
@@ -51,6 +77,7 @@ function placeMarker(location) {
  * и выводит информацию в поле address.
  * TODO: создать обратный процесс - найти точку по адресу.
  */
+
 function getAddress(latLng) {
     geocoder = new google.maps.Geocoder();
     geocoder.geocode({
@@ -81,9 +108,9 @@ function getAddress(latLng) {
 
     if (useragent.indexOf('iPhone') != -1 || useragent.indexOf('Android') != -1) {
         mapdiv.style.width = '100%';
-        mapdiv.style.height = '100%';
+        mapdiv.style.height = '300px';
     } else {
         mapdiv.style.width = '100%';
-        mapdiv.style.height = '600px';
+        mapdiv.style.height = '300px';
     }
 })();

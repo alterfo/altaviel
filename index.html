@@ -4,35 +4,119 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.3.2.min.css">
+    <link rel="stylesheet" href="static/css/reset.css">
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="static/css/jquery.mobile-1.3.2.min.css">
 
+        <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyCW4Xklzsz81joDEoqEPlSt2fhaxArZlAE&sensor=false&language=ru"></script>
+    <script src="static/js/jquery-1.10.2.min.js"></script>
+    <script src="static/js/jquery.mobile-1.3.2.min.js"></script>
+    
     <!--[if lt IE 9]>
-  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 </head>
 
 <body>
-    <div data-role="page">
-        <div data-role="header"></div>
+    <div data-role="page" id="main_page" data-theme="b">
+        <div data-role="header">
+            <h3>Альтавиэль</h3>
+            <a href="#settings" data-icon="gear" class="ui-btn-right">Настройки</a>
+        </div>
         <div data-role="content">
-            <input id="address" name="address" value="" type="text" placeholder="Address" data-clear-btn="true" />
-            <input type="button" onclick="codeAddress()" value="Найти по адресу" />
-
-            <div id="map-canvas" />
+            <ul data-role="listview" data-inset="true" data-theme="a">
+                <li><a href="#map_page">Создать запрос</a>
+                </li>
+                <li><a href="#search">Ближайшие запросы</a>
+                </li>
+                <li><a href="#about">О нас</a>
+                </li>
+            </ul>
         </div>
         <div data-role="footer"></div>
     </div>
 
 
+    <!--
+    Страница с картой.
+-->
+    <div data-role="page" id="map_page" data-theme="b" data-add-back-btn="true">
+        <div data-role="header">
+            <h3>Запрос о помощи</h3>
+            <a href="#settings" data-icon="gear" class="ui-btn-right">Настройки</a>
+        </div>
+        <div data-role="content">
+            <label for="address">Адрес ближайшего дома:</label>
+            <input id="address" name="address" value="" type="text" placeholder="Address" data-clear-btn="true" />
+            <a href="#form_page" data-role="button" data-rel="dialog" data-transition="pop" id="form_page_href" style="display:none;">Далее</a>
+            <div id="map-canvas" />
+        </div>
+        <div data-role="footer"></div>
+    </div>
 
+    <div data-role="page" id="form_page" data-theme="b" data-add-back-btn="true">
+        <div data-role="header">
+            <h3>Запрос о помощи</h3>
+            <a href="#settings" data-icon="gear" class="ui-btn-right">Настройки</a>
+        </div>
+        <div data-role="content">
+            <div data-role="fieldcontain">
+                <label for="name">My name:</label>
+                <input type="text" name="name" id="name" value="" />
+                <label for="textarea">About myself:</label>
+                <textarea cols="40" rows="8" name="textarea" id="textarea"></textarea>
+                <label for="slider">Value this site:</label>
+                <input type="range" name="slider" id="slider" value="0" min="-50" max="50" />
+                <p/>
+                <label for="slider2">Value this site:</label>
+                <select name="slider2" id="slider2" data-role="slider">
+                    <option value="off">Like</option>
+                    <option value="on">Dislike</option>
+                </select>
+                <p/>
+                <label for="select-choice-1" class="select">Select your current mood:</label>
+                <select name="select-choice-1" id="select-choice-1">
+                    <option value="standard">Tired</option>
+                    <option value="standard">Happy</option>
+                    <option value="standard">Sick</option>
+                    <option value="standard">Sunny</option>
+                </select>
+            </div>
+        </div>
+        <div data-role="footer"></div>
+    </div>
 
-    <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyCW4Xklzsz81joDEoqEPlSt2fhaxArZlAE&sensor=false&language=ru"></script>
+    <div data-role="page" id="search" data-theme="b" data-add-back-btn="true">
+        <div data-role="header">
+            <h3>Поиск возможностей</h3>
+            <a href="#settings" data-icon="gear" class="ui-btn-right">Настройки</a>
+        </div>
+        <div data-role="content">
+            фыва
+        </div>
+        <div data-role="footer">&copy;</div>
+    </div>
 
-    <script src="js/jquery-1.10.2.min.js"></script>
-    <script src="js/jquery.mobile-1.3.2.min.js"></script>
-    <script src="js/functions.js"></script>
+    <div data-role="page" id="settings" data-theme="b" data-add-back-btn="true">
+        <div data-role="header">
+            <h3>Настройки</h3>
+            <a href="#settings" data-icon="gear" class="ui-btn-right">Настройки</a>
+        </div>
+        <div data-role="content">
+            <div data-role="fieldcontain">
+                <label for="name">Мое имя:</label>
+                <input type="text" name="name" id="name" value="" />
+            </div>
+            <div data-role="fieldcontain">
+                <label for="textarea">Обо мне:</label>
+                <textarea name="textarea" id="textarea"></textarea>
+            </div>
+        </div>
+        <div data-role="footer">&copy;</div>
+    </div>
+
+<script src="static/js/functions.js"></script>
+
 </body>
 
 </html>

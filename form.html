@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.3.2.min.css">
+
+    <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+</head>
+
+<body>
+    <div data-role="page">
+        <div data-role="header"></div>
+        <div data-role="content">
+            <input id="address" name="address" value="" type="text" placeholder="Address" data-clear-btn="true" />
+            <input type="button" onclick="codeAddress()" value="Найти по адресу" />
+
+            <div id="map-canvas" />
+        </div>
+        <div data-role="footer"></div>
+    </div>
+
+
+
+
+    <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyCW4Xklzsz81joDEoqEPlSt2fhaxArZlAE&sensor=false&language=ru"></script>
+
+    <script src="js/jquery-1.10.2.min.js"></script>
+    <script src="js/jquery.mobile-1.3.2.min.js"></script>
+    <script src="js/functions.js"></script>
+</body>
+
+</html>
