@@ -1,5 +1,3 @@
-
-
 /**
  * Функция для выставления размеров канваса в зависимости от устройства.
  *
@@ -23,162 +21,123 @@
     }
 })();
 
-$(function() {
-    var map;
-    var map2;
-    var marker;
-    google.maps.visualRefresh = true;
-    /**
-     *   Показываем страницу с картой
-     */
-    $('#map_page').on('pageshow', function(loc) {
-        $('#form_page_href').hide();
-        var myPosition;
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(loc) {
-                    myPosition = new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude);
-                    showMap(myPosition, 'map-canvas', map, marker);
-                    placeMarker(myPosition, map, marker);
-                    $('#form_page_href').show();
-                },
-                // if error
+var myPos;
+var browserSupportFlag = new Boolean();
 
-                function(e) {
-                    switch (e.code) {
-                        case error.PERMISSION_DENIED:
-                            $('#message').append = "User denied the request for Geolocation."
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            $('#message').append = "Location information is unavailable."
-                            break;
-                        case error.TIMEOUT:
-                            $('#message').append = "The request to get user location timed out."
-                            break;
-                        case error.UNKNOWN_ERROR:
-                            $('#message').append = "An unknown error occurred."
-                            break;
-                    }
-                    myPosition = new google.maps.LatLng(55.80, 49.10);
-                    showMap(myPosition, 'map-canvas', map, marker);
-                    placeMarker(myPosition, marker, map);
-                    $('#message').append('Укажите ваше местоположение вручную');
-                    $('#form_page_href').hide();
-                });
-        }
+function getMyPos() {
+    if (navigator.geolocation) {
+        browserSupportFlag = true;
+        navigator.geolocation.getCurrentPosition(function(position) {
+            initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            myPos = initialLocation;
+        }, function() {
+            handleNoGeolocation(browserSupportFlag);
+        });
+    }
+    // Browser doesn't support Geolocation
+    else {
+        browserSupportFlag = false;
+        handleNoGeolocation(browserSupportFlag);
+    }
 
-    });
-
-
-    $('#search_page').on('pageshow', function(loc) {
-        var myPosition;
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(loc) {
-                myPosition = new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude);
-                showMap(myPosition, 'map-search-canvas', map2, marker);
-                // TODO: разукрасить маркер
-                placeMarker(myPosition, marker, map2);
-
-            }, function(e) {
-                switch (e.code) {
-                    case error.PERMISSION_DENIED:
-                        $('#message').append = "User denied the request for Geolocation."
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        $('#message').append = "Location information is unavailable."
-                        break;
-                    case error.TIMEOUT:
-                        $('#message').append = "The request to get user location timed out."
-                        break;
-                    case error.UNKNOWN_ERROR:
-                        $('#message').append = "An unknown error occurred."
-                        break;
-                }
-
-                myPosition = new google.maps.LatLng(55.80, 49.10);
-                showMap(myPosition, 'map-search-canvas', map2, marker);
-                $('#message').append('Укажите ваше местоположение вручную');
-            });
-        }
-
-        //TODO: взять с сервера данные и разместить на карте
-
-    });
-
-    /*
-     * Функция помещает маркер на карту, либо перемещает существующий
-     * Один маркер на карте
-     * Сразу же на него вешается событие по обработке драгэндропа.
-     * Координаты передаются функции getAddress для вывода адреса.
-     */
-
-    function placeMarker(location, map, marker) {
-        if (marker) {
-            marker.setPosition(location);
+    function handleNoGeolocation(errorFlag) {
+        if (errorFlag == true) {
+            alert("Геолокация не сработала.");
+            initialLocation = new google.maps.LatLng(55.80, 49.10);;
         } else {
-            marker = new google.maps.Marker({
-                draggable: true,
-                position: location,
-                map: map,
-                animation: google.maps.Animation.DROP
-            });
-
-            google.maps.event.addListener(marker, 'dragend', function(event) {
-                var point = marker.getPosition();
-                getAddress(point);
-            });
-
+            alert("Ваш браузер не поддерживает геолокацию. Вы в Сибири.");
+            initialLocation = new google.maps.LatLng(60, 105);;
         }
-        getAddress(location);
+        myPos = initialLocation;
     }
-
-    function showMap(center, canvas, map, marker) {
-        var mapOptions = {
-            center: center,
-            zoom: 16,
-            disableDoubleClickZoom: true, // убивает зум по двойному клику
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-
-        map = new google.maps.Map(document.getElementById(canvas), mapOptions);
-        google.maps.event.addListener(map, 'dblclick', function(event) {
-            placeMarker(event.latLng, map, marker);
-        });
-        google.maps.event.addDomListener(window, "resize", function() {
-            var center = map.getCenter();
-            google.maps.event.trigger(map, "resize");
-            map.setCenter(center);
-        });
-    }
-
-});
+}
+getMyPos();
 
 
-
-
-
-
-
-/**
- * Функция принимает координаты в формате gmap.latLng
- * и выводит информацию в поле address.
- * TODO: создать обратный процесс - найти точку по адресу.
- */
-
-function getAddress(latLng) {
+function getAddress(location) {
     geocoder = new google.maps.Geocoder();
     geocoder.geocode({
-            'latLng': latLng
+            'latLng': location
         },
         function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 if (results[0]) {
-                    document.getElementById('address').value = results[0].formatted_address;
+                    $('.address').val(results[0].formatted_address);
                 } else {
-                    document.getElementById('address').value = "No results";
+                    $('.address').val("No results");
                 }
             } else {
-                document.getElementById('address').value = status;
+                $('.address').val(status);
             }
 
         });
 }
+
+var Map = function(canvas, center, markers) {
+    this.markers = markers;
+    this.canvas = canvas;
+    this.center = center;
+
+    var mapOptions = {
+        center: this.center,
+        zoom: 16,
+        disableDoubleClickZoom: true, // убивает зум по двойному клику
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    this.map = new google.maps.Map(document.getElementById(this.canvas), mapOptions);
+
+    this.addressField = $('#' + canvas).closest('.address');
+
+
+    google.maps.event.addDomListener(window, "resize", function() {
+        var center = this.map.getCenter();
+        google.maps.event.trigger(this.map, "resize");
+        this.map.setCenter(center);
+    });
+}
+
+Map.prototype.newMarker = function(location) {
+    var markers = this.markers;
+    var len = markers.length;
+    markers[len] = new google.maps.Marker({
+        draggable: true,
+        position: location,
+        map: this.map,
+        animation: google.maps.Animation.DROP
+    });
+    var marker = markers[len];
+
+    google.maps.event.addListener(marker, 'dragend', function(event) {
+        var point = marker.getPosition();
+        getAddress(point);
+    });
+        google.maps.event.addListener(this.map, 'dblclick', function(event) {
+        marker.setPosition(event.latLng);
+        getAddress(event.latLng);
+    });
+        getAddress(location);
+};
+
+
+
+
+$(function() {
+    google.maps.visualRefresh = true;
+    /**
+     *   Показываем страницу с картой
+     */
+    $('#map_page').on('pageshow', function() {
+        var map = new Map('map-canvas', myPos, []);
+        map.newMarker(myPos);
+        $('#form_page_href').show();
+    });
+
+    $('#search_page').on('pageshow', function(loc) {
+        var map2 = new Map('map-search-canvas', myPos, []);
+        map2.newMarker(myPos);
+
+    });
+    //TODO: взять с сервера данные и разместить на карте
+
+});
