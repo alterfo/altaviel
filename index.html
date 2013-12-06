@@ -36,8 +36,8 @@
     <!--
     Создание запроса о помощи.
 -->
-    <div data-role="page" id="map_page" data-theme="b" >
-        
+    <div data-role="page" id="map_page" data-theme="b">
+
         <div data-role="header">
             <a href="#main_page" data-icon="home" class="ui-btn-left" data-iconpos="notext">Домой</a>
             <h3>Запрос о помощи</h3>
@@ -46,18 +46,17 @@
         <div data-role="content">
             <label for="address">Адрес ближайшего дома:</label>
             <input class="address" name="address" value="" type="text" placeholder="Address" data-clear-btn="true" />
-            <a href="#form_page" data-role="button" data-rel="dialog" data-transition="pop" id="form_page_href" style="display:none;">Далее</a>
+            <a href="#form_page" data-role="button" data-rel="dialog" data-transition="flip" id="form_page_href" style="display:none;">Далее</a>
             <div id="map-canvas"></div>
         </div>
         <div data-role="footer"></div>
     </div>
 
-<!--
+    <!--
     Показать ближайшие запросы
 -->
 
-    <div data-role="page" id="search_page" data-theme="b" >
-        
+    <div data-role="page" id="search_page" data-theme="b">
         <div data-role="header">
             <a href="#main_page" data-icon="home" class="ui-btn-left" data-iconpos="notext">Домой</a>
             <h3>Ближайшие к вам запросы</h3>
@@ -75,8 +74,7 @@
         <div data-role="header">
             <a href="#main_page" data-icon="home" class="ui-btn-left" data-iconpos="notext">Домой</a>
             <h3>О нас</h3>
-            <a h
-            ref="#settings" data-icon="gear" class="ui-btn-right">Настройки</a>
+            <a h ref="#settings" data-icon="gear" class="ui-btn-right">Настройки</a>
         </div>
         <div data-role="content">
             <h1>Альтавиэль</h1>
@@ -85,8 +83,7 @@
         <div data-role="footer"></div>
     </div>
 
-    <div data-role="page" id="settings" data-theme="b" >
-        
+    <div data-role="page" id="settings" data-theme="b">
         <div data-role="header">
             <a href="#main_page" data-icon="home" class="ui-btn-left" data-iconpos="notext">Домой</a>
             <h3>Настройки</h3>
@@ -105,41 +102,63 @@
         <div data-role="footer">&copy;</div>
     </div>
 
-    <div data-role="page" id="form_page" data-theme="b" >
-        
+    <div data-role="page" id="form_page" data-theme="b">
+
         <div data-role="header">
-            <a href="#main_page" data-icon="home" class="ui-btn-left" data-iconpos="notext">Домой</a>
             <h3>Запрос о помощи</h3>
-            <a href="#settings" data-icon="gear" class="ui-btn-right">Настройки</a>
+            <a href="#map_page" data-icon="delete" class="ui-btn-right" data-iconpos="notext">Настройки</a>
         </div>
         <div data-role="content">
             <div data-role="fieldcontain">
-                <label for="name">My name:</label>
-                <input type="text" name="name" id="name" value="" />
-                <label for="textarea">About myself:</label>
-                <textarea cols="40" rows="8" name="textarea" id="textarea"></textarea>
-                <label for="slider">Value this site:</label>
-                <input type="range" name="slider" id="slider" value="0" min="-50" max="50" />
-                <p/>
-                <label for="slider2">Value this site:</label>
-                <select name="slider2" id="slider2" data-role="slider">
-                    <option value="off">Like</option>
-                    <option value="on">Dislike</option>
+                <input type="hidden" name="lat" id='lat' />
+                <input type="hidden" name="long" id="long" />
+                <label for="select-type" class="select">Тип проблемы:</label>
+                <select name="select-type" id="select-type">
+                    <option value="standard">Проблема с автомобилем</option>
+                    <option value="standard">Компьютерная помощь</option>
+                    <option value="standard">Бытовой ремонт</option>
+                    <option value="standard">Привезти что-нибудь</option>
                 </select>
+                <label for="title">Заголовок:</label>
+                <input type="text" name="title" id="title" value="" />
                 <p/>
-                <label for="select-choice-1" class="select">Select your current mood:</label>
-                <select name="select-choice-1" id="select-choice-1">
-                    <option value="standard">Tired</option>
-                    <option value="standard">Happy</option>
-                    <option value="standard">Sick</option>
-                    <option value="standard">Sunny</option>
-                </select>
+                <label for="problem_text">Описание проблемы:</label>
+                <!-- TODO: Добавить возможность записи видео или аудио -->
+                <textarea cols="40" rows="8" name="problem_text" id="problem_text"></textarea>
+                <p/>
+                <label for="severity">Время жизни заявки (в часах):</label>
+                <input type="range" name="severity" id="severity" value="1" min="0" max="72" />
+                <p/>
+                <a href="#form_submit" data-role="button">Отправить заявку</a>
             </div>
         </div>
         <div data-role="footer"></div>
     </div>
 
+    <script>
+    /**
+     * Функция для выставления размеров канваса в зависимости от устройства.
+     *
+     *
+     */
+    (function adjustCanvas() {
+        var useragent = navigator.userAgent;
+        var mapdiv = document.getElementById("map-canvas");
+        var mapdiv2 = document.getElementById("map-search-canvas");
 
+        if (useragent.indexOf('iPhone') != -1 || useragent.indexOf('Android') != -1) {
+            mapdiv.style.width = '100%';
+            mapdiv.style.height = '300px';
+            mapdiv2.style.width = '100%';
+            mapdiv2.style.height = '300px';
+        } else {
+            mapdiv.style.width = '100%';
+            mapdiv.style.height = '300px';
+            mapdiv2.style.width = '100%';
+            mapdiv2.style.height = '300px';
+        }
+    })();
+    </script>
     <script src="static/js/functions.js"></script>
 
 </body>
