@@ -20,8 +20,12 @@ db.on('open', function callback() {});
 var Schema = mongoose.Schema;
 
 var requestSchema = new Schema({
+	lat: String,
+	long: String,
 	title: String,
-	type: Number,
+	problem_text: String,
+	type: Number, // 1 - auto, 2 - comp, 3 - life, 4 - drop
+	severity: Number,
 	requestor: { type: Number, ref: 'Person' },
 	helper: { type: Number, ref: 'Person' }
 });
@@ -30,7 +34,7 @@ var personSchema = new Schema({
 	name: String,
 	nickname: String,
 	email: String,
-	requests: [{ type: Schema.Types.ObjectId, ref: 'Story' }]
+	requests: [{ type: Schema.Types.ObjectId, ref: 'Request' }]
 });
 
 mongoose.model('Person', personSchema);
